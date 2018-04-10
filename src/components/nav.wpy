@@ -1,0 +1,46 @@
+<style lang="less">
+  .nav-list {
+    display: flex;
+    justify-content: space-between;
+    
+    .nav-item {
+      display: flex;
+      justify-content: center;
+      width: 340rpx;
+      height: 230rpx;
+    }
+  }
+</style>
+
+<template>
+  <view class="nav-list">
+    <repeat for="{{ navList }}">
+      <navigator 
+      class="nav-item" 
+      hover-class="none" 
+      open-type="{{ item.otype || 'navigate' }}" 
+      url="{{ item.url }}"
+      style="background-color: blue"
+      >
+        <image src="{{ item.icon }}" />
+        <text>{{ item.text }}</text>
+      </navigator>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Nav extends wepy.component {
+    data = {
+      navList: [
+        {
+          icon: '../images/nav_hotel.png',
+          text: '酒店预订',
+          url: ''
+        }
+      ]
+    }
+  }
+</script>

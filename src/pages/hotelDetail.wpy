@@ -1,0 +1,13 @@
+<style>
+</style>
+
+<template>
+  <view>this is hotel detail</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class hotelDetail extends wepy.page {
+
+  }
+</script>

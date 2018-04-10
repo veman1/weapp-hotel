@@ -1,0 +1,20 @@
+<style>
+</style>
+
+<template>
+  <slider></slider>
+  <nav></nav>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Slider from '../components/slider'
+  import Nav from '../components/nav'
+
+  export default class Index extends wepy.page {
+    components = {
+      slider: Slider,
+      nav: Nav
+    }
+  }
+</script>
