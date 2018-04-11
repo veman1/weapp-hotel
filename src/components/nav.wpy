@@ -2,12 +2,27 @@
   .nav-list {
     display: flex;
     justify-content: space-between;
-    
+    margin: auto;
+    width: 700rpx;
+    flex-wrap: wrap; 
     .nav-item {
       display: flex;
+      flex-direction: column;
       justify-content: center;
+      align-items: center;
       width: 340rpx;
       height: 230rpx;
+      color: #fff;
+      margin: 0 0 25rpx;
+      &:first-child { border-top-left-radius: 8px; }
+      &:nth-child(2) { border-top-right-radius: 8px; }
+      &:nth-last-child(2) { border-bottom-left-radius: 8px; }
+      &:last-child { border-bottom-right-radius: 8px; }
+      image {
+        width: 90rpx;
+        height: 90rpx;
+        margin: 20rpx 0 0;
+      }
     }
   }
 </style>
@@ -20,10 +35,10 @@
       hover-class="none" 
       open-type="{{ item.otype || 'navigate' }}" 
       url="{{ item.url }}"
-      style="background-color: blue"
+      style="background-color: {{ item.backgroundColor }}"
       >
-        <image src="{{ item.icon }}" />
         <text>{{ item.text }}</text>
+        <image mode="aspectFit" src="{{ item.icon }}" />
       </navigator>
     </repeat>
   </view>
@@ -38,7 +53,26 @@
         {
           icon: '../images/nav_hotel.png',
           text: '酒店预订',
-          url: ''
+          url: '',
+          backgroundColor: '#64C9FF'
+        },
+        {
+          icon: '../images/nav_meeting.png',
+          text: '会场预订',
+          url: '',
+          backgroundColor: '#28CDE3'
+        },
+        {
+          icon: '../images/nav_shopping.png',
+          text: '美食商城',
+          url: '',
+          backgroundColor: '#FA5856'
+        },
+        {
+          icon: '../images/nav_vip.png',
+          text: '我要会员',
+          url: '',
+          backgroundColor: '#FBB748'
         }
       ]
     }

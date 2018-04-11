@@ -1,13 +1,59 @@
-<style>
+<style lang="less">
+  .g-banner {
+    position: relative;
+    .bannerbottom {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 80rpx;
+      background-image: linear-gradient(to bottom, rgba(255,255,255,.5) 0, rgba(0,0,0,.5) 100%);
+      color: #fff;
+      text {
+        white-space: nowrap;
+        padding: 0 1em;
+        font-size: 30rpx;
+      }
+      .button {
+        display: flex;
+        image {
+          width: 1.25em;
+          height: 1.1em;
+        }
+      }
+    }
+  }
 </style>
 
 <template>
-  <view>this is hotel detail</view>
+  <view class="g-banner">
+    <slider :list="gallery"></slider>
+    <view class="bannerbottom">
+      <text>维也纳酒店</text>
+      <view class="button">
+        <image mode="aspectFit" src="/images/hdetail_camera.png" />
+        <text>相册</text>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  export default class hotelDetail extends wepy.page {
+  import Slider from '../components/slider'
 
+  export default class hotelDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '酒店详情'
+    }
+
+    components = {
+      slider: Slider
+    }
+
+    data = {
+      gallery: new Array(4).fill('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg')
+    }
   }
 </script>

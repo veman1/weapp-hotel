@@ -1,0 +1,19 @@
+<style lang="less">
+  image {
+    width: 150rpx;
+    height: 150rpx;
+    display: block;
+    margin: auto;
+  }
+</style>
+
+<template>
+  <image mode="widthFix" src="/images/footer.png" />
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Footer extends wepy.component {
+  }
+</script>

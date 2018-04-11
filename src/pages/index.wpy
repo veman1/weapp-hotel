@@ -1,20 +1,43 @@
 <style>
+  page {
+    background-color: #F7F7F7;
+  }
+  .g-nav {
+    padding: 25rpx 0 0;
+  }
+  .g-footer {
+    margin: 90rpx 0 0;
+  }
 </style>
 
 <template>
-  <slider></slider>
-  <nav></nav>
+  <view class="g-slider">
+    <slider :list.sync="adList"></slider>
+  </view>
+  
+  <view class="g-nav">
+    <nav></nav>
+  </view>
+
+  <view class="g-footer">
+    <footer></footer>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import Slider from '../components/slider'
   import Nav from '../components/nav'
+  import Footer from '../components/footer'
 
   export default class Index extends wepy.page {
+    data = {
+      adList: new Array(4).fill('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523350325253&di=095437ad748666ccf49f288600442951&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01671f58f6204fa8012049ef6c070e.png')
+    }
     components = {
       slider: Slider,
-      nav: Nav
+      nav: Nav,
+      footer: Footer
     }
   }
 </script>

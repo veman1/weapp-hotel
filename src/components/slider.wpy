@@ -1,7 +1,6 @@
 <style lang="less">
   swiper {
     height: 375rpx;
-
     image {
       display: block;
       width: 100%;
@@ -11,8 +10,8 @@
 </style>
 
 <template>
-  <swiper>
-    <repeat for="{{ adList }}">
+  <swiper circular>
+    <repeat for="{{ list }}">
       <swiper-item>
         <image src="{{ item }}" />
       </swiper-item>
@@ -24,8 +23,8 @@
   import wepy from 'wepy'
 
   export default class Slider extends wepy.component {
-    data = {
-      adList: new Array(4).fill('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523350325253&di=095437ad748666ccf49f288600442951&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01671f58f6204fa8012049ef6c070e.png')
+    props = {
+      list: Array
     }
   }
 </script>
