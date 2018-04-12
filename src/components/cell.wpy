@@ -1,0 +1,59 @@
+<style lang="less">
+  .cell {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #F6F6F6;
+    padding: 0 28rpx 0 0;
+    height: 90rpx;
+    width: 100%;
+    &:last-child {
+      border-bottom: 0;
+    }
+    .cell__bd {
+      max-width: 90%;
+      flex-shrink: 1;
+    }
+    .cell__ft {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      color: #409EE4;
+      font-size: 24rpx;
+      &:after {
+        content: '';
+        width: .6em;
+        height: .6em;
+        box-sizing: border-box;
+        border-right: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        transform-origin: 50% 50%;
+        transform: rotate(-45deg);
+        margin: 0 0 0 2rpx;
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="cell">
+    <view class="cell__bd">
+      <slot name="bd"></slot>
+    </view>
+    <view class="cell__ft">
+      <slot name="fttext">更多</slot>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Cell extends wepy.component {
+    props = {
+      fttext: ''
+    }
+  }
+</script>

@@ -1,4 +1,8 @@
 <style lang="less">
+  page {
+    background-color: #F5F5F5;
+  }
+
   .g-banner {
     position: relative;
     .bannerbottom {
@@ -10,25 +14,167 @@
       height: 80rpx;
       background-image: linear-gradient(to bottom, rgba(255,255,255,.5) 0, rgba(0,0,0,.5) 100%);
       color: #fff;
-      text {
+      >text {
         white-space: nowrap;
         padding: 0 1em;
-        font-size: 30rpx;
+        font-size: 32rpx;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 80%;
+        text-overflow: ellipsis;
       }
       .button {
+        position: absolute;
+        right: 30rpx;
+        top: 50%;
+        transform: translate(0, -50%);
         display: flex;
+        align-items: center;
+        font-size: 22rpx;
+        background-color: rgba(0,0,0,.6);
+        height: 2.2em;
+        border-radius: 1.1em;
+        padding: 0 .7em;
         image {
           width: 1.25em;
           height: 1.1em;
+          margin: 0 10rpx 0 0;
         }
       }
     }
   }
-</style>
+
+  .g-cells {
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+  }
+  .panel {
+    padding: 0 0 0 35rpx;
+  }
+  .comment {
+    display: flex;
+    align-items: flex-end;
+    >text {
+      color: #409EE4;
+      font-size: 24rpx;
+      &.score { font-size: 1.3em; }
+    }
+    >view { color: #bbb; margin: 0 0 0 .6em; }
+  }
+  .address {
+    >view {
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    >text { color: #aaa; font-weight: 500; }
+  }
+
+  .time {
+    display: flex;
+    margin: 25rpx 0 0;
+    background-color: #fff;
+    picker:not(last-child) { border-right: 1px solid #eee; }
+    .item {
+      box-sizing: border-box;
+      width: 375rpx;
+      height: 92rpx;
+      display: flex;
+      align-items: center;
+      padding: 0 0 0 1em;
+      font-size: 24rpx;
+      >text { font-size: 1.2em; margin: 0 .6em 0 0; }
+      >view { color: #aaa; }
+    }
+  }
+
+  .rooms {
+    border-top: 1px solid #eee;
+    .room {
+      border-bottom: 1px solid #eee;
+      .rtitle {
+        position: relative;
+        height: 160rpx;
+        background-color: #fff;
+        >image {
+          position: absolute;
+          top: 20rpx;
+          left: 30rpx;
+          width: 120rpx;
+          height: 120rpx;
+          border-radius: 4px;
+        }
+        >text {
+          position: absolute;
+          bottom: 100rpx;
+          left: 170rpx;
+          font-size: 32rpx;
+        }
+        .stit {
+          position: absolute;
+          top: 60rpx;
+          left: 170rpx;
+          color: #666;
+          font-size: 22rpx;
+        }
+        .ft {
+          position: absolute;
+          right: 80rpx;
+          top: 50%;
+          transform: translate(0, -50%);
+          font-size: 22rpx;
+          color: #999;
+          text {
+            color: #FF7200;
+            font-size: 32rpx;
+            font-weight: bold;
+            white-space: nowrap;
+            &.unit { font-size: 20rpx; }
+          }
+        }
+        > i {
+          @arrow: #409EE4;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 50%;
+          right: 25rpx;
+          transform: translate(0, -50%);
+          width: 30rpx;
+          height: 30rpx;
+          border-radius: 50%;
+          border: 1px solid @arrow;
+          &:after {
+            content: '';
+            width: 30%;
+            height: 30%;
+            border-right: 1px solid @arrow;
+            border-bottom: 1px solid @arrow;
+            transform-origin: 50% 50%;
+            transform: rotate(45deg) translate(-25%, -25%);
+          }
+        }
+      }
+      &.expand {
+
+        > i:after {
+          transform: rotate(135deg) translate(-25%, -25%);
+        }
+      }
+      .plist {
+        .pitem {}
+      }
+    }
+  }
+</style> 
 
 <template>
+  <view id="view"></view>
   <view class="g-banner">
     <slider :list="gallery"></slider>
+
     <view class="bannerbottom">
       <text>维也纳酒店</text>
       <view class="button">
@@ -37,11 +183,68 @@
       </view>
     </view>
   </view>
+
+  <view class="g-cells">
+    <view class="panel">
+      <cell>
+        <view class="comment" slot="bd">
+          <text class="score">4.6</text>
+          <text>分</text>
+          <view>366条点评</view>
+        </view>
+        <text slot="fttext">点评</text>
+      </cell>
+      <cell>
+        <view class="address" slot="bd">
+          <view>桂澜北路</view>
+          <text>【千灯湖、桂城】</text>
+        </view>
+        <text slot="fttext">地图</text>
+      </cell>
+    </view>
+  </view>
+
+  <view class="time">
+    <picker mode="date">
+      <view class="item">
+        <text>12月25日</text>
+        <view>今天 入住</view>
+      </view>
+    </picker>
+    <picker mode="date">
+      <view class="item">
+        <text>12月26日</text>
+        <view>今天 离店</view>
+      </view>
+    </picker>
+  </view>
+
+  <view class="rooms">
+    <repeat for="{{ roomList }}">
+      <view class="room expand">
+        <view class="rtitle">
+          <image src="{{ item.img }}" />
+          <text>标准双床房</text>
+          <view class="stit">25m² 双床 3-5层</view>
+          <view class="ft">
+            <text class="unit">￥</text>
+            <text>261</text>起
+          </view>
+          <i />
+        </view>
+        <view class="plist">plist
+        </view>
+      </view>
+    </repeat>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import Slider from '../components/slider'
+  import Cell from '../components/cell'
+
+  var bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
 
   export default class hotelDetail extends wepy.page {
     config = {
@@ -49,11 +252,18 @@
     }
 
     components = {
-      slider: Slider
+      slider: Slider,
+      cell: Cell
     }
 
     data = {
-      gallery: new Array(4).fill('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg')
+      gallery: new Array(4).fill(bannerImg),
+      roomList: new Array(3).fill({
+        img: bannerImg
+      })
+    }
+
+    methods = {
     }
   }
 </script>
