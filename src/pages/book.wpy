@@ -1,0 +1,12 @@
+<style lang="less"></style>
+
+<template>
+  book
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class Book extends wepy.page {
+  
+}
+</script>

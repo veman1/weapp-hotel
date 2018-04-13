@@ -1,4 +1,5 @@
 <style lang="less">
+  @blue: #26AAF2;
   page {
     background-color: #F5F5F5;
   }
@@ -48,9 +49,11 @@
     background-color: #fff;
     border-bottom: 1px solid #e6e6e6;
   }
+
   .panel {
     padding: 0 0 0 35rpx;
   }
+
   .comment {
     display: flex;
     align-items: flex-end;
@@ -61,6 +64,7 @@
     }
     >view { color: #bbb; margin: 0 0 0 .6em; }
   }
+
   .address {
     >view {
       white-space: nowrap;
@@ -105,7 +109,7 @@
           height: 120rpx;
           border-radius: 4px;
         }
-        >text {
+        > text {
           position: absolute;
           bottom: 100rpx;
           left: 170rpx;
@@ -127,7 +131,7 @@
           color: #999;
           text {
             color: #FF7200;
-            font-size: 32rpx;
+            font-size: 38rpx;
             font-weight: bold;
             white-space: nowrap;
             &.unit { font-size: 20rpx; }
@@ -157,23 +161,58 @@
           }
         }
       }
-      &.expand {
-
-        > i:after {
-          transform: rotate(135deg) translate(-25%, -25%);
-        }
-      }
       .plist {
+        display: none;
         .pitem {}
       }
+      &.expand {
+        .rtitle > i:after {
+          transform: rotate(-135deg) translate(-25%, -25%);
+        }
+        .plist {
+          display: block;
+        }
+      }
     }
+  }
+
+  .flist {
+    background-color: #fff;
+  }
+
+  .ititle {
+    display: flex;
+    align-items: center;
+    color: @blue;
+    background-color: #F5F5F5;
+    height: 84rpx;
+    padding: 0 .5em;
+    font-size: 30rpx;
+  }
+  .ilist--flex {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 50rpx 20rpx;
+    > text {
+      width: 33.33%;
+      margin: .4em 0 0;
+    }
+  }
+  .ititle2 {
+    border-left: 3px solid @blue;
+    font-size: 28rpx;
+    padding: 0 0 0 .4em;
+    color: @blue;
+  }
+  .icontent {
+    background-color: #fff;
+    padding: .65em .55em;
   }
 </style> 
 
 <template>
-  <view id="view"></view>
   <view class="g-banner">
-    <slider :list="gallery"></slider>
+    <slider :list.sync="gallery"></slider>
 
     <view class="bannerbottom">
       <text>维也纳酒店</text>
@@ -220,22 +259,42 @@
   </view>
 
   <view class="rooms">
-    <repeat for="{{ roomList }}">
-      <view class="room expand">
-        <view class="rtitle">
-          <image src="{{ item.img }}" />
-          <text>标准双床房</text>
-          <view class="stit">25m² 双床 3-5层</view>
-          <view class="ft">
-            <text class="unit">￥</text>
-            <text>261</text>起
-          </view>
-          <i />
+    <view wx:for="{{ roomList }}" class="room {{ item.expand ? 'expand' : '' }}">
+      <view class="rtitle" @tap="roomtap({{ index }})">
+        <image src="{{ item.img }}" />
+        <text>标准双床房</text>
+        <view class="stit">25m² 双床 3-5层</view>
+        <view class="ft">
+          <text class="unit">￥</text>
+          <text>261</text>起
         </view>
-        <view class="plist">plist
+        <i />
+      </view>
+      <view class="plist">
+        <repeat for="{{ item.priceList }}">
+          <priceitem :id.sync="item.id"></priceitem>
+        </repeat>
+      </view>
+    </view>
+  </view>
+
+  <view class="facility">
+    <view class="ititle">酒店设施</view>
+    <view class="flist">
+      <view class="fitem" wx:for="{{facility_list}}">
+        <view class="ititle2">{{item.cname}}</view>
+        <view class="ilist--flex">
+          <text wx:for="{{item.list}}">{{item}}</text>
         </view>
       </view>
-    </repeat>
+    </view>
+  </view>
+
+  <view class="info_list">
+    <view class="item" wx:for="{{ infoList }}">
+      <view class="ititle">{{item.text}}</view>
+      <view class="icontent">{{item.value}}</view>
+    </view>
   </view>
 </template>
 
@@ -243,27 +302,154 @@
   import wepy from 'wepy'
   import Slider from '../components/slider'
   import Cell from '../components/cell'
+  import Priceitem from '../components/priceitem'
 
   var bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
 
-  export default class hotelDetail extends wepy.page {
+  export default class HotelDetail extends wepy.page {
     config = {
       navigationBarTitleText: '酒店详情'
     }
 
     components = {
       slider: Slider,
+      priceitem: Priceitem,
       cell: Cell
     }
 
     data = {
       gallery: new Array(4).fill(bannerImg),
-      roomList: new Array(3).fill({
-        img: bannerImg
-      })
+      roomList: [
+        {
+          img: bannerImg,
+          priceList: [
+            { id: '3' },
+            { id: '4' },
+            { id: '5' }
+          ]
+        },
+        {
+          img: bannerImg,
+          priceList: [
+            { id: '3' },
+            { id: '4' },
+            { id: '5' }
+          ]
+        },
+        {
+          img: bannerImg,
+          priceList: [
+            { id: '3' },
+            { id: '4' },
+            { id: '5' }
+          ]
+        }
+      ],
+      facility_list: [
+        {
+          cname: '网络',
+          list: [
+            '客房WiFi免费',
+            '房间内高速上网',
+            '公用区WiFi免费'
+          ]
+        },
+        {
+          cname: '交通服务',
+          list: [
+            '免费停车场',
+            '叫车服务'
+          ]
+        },
+        {
+          cname: '休闲娱乐',
+          list: [
+            '按摩室',
+            '桌球室',
+            '棋牌室',
+            'KTV'
+          ]
+        },
+        {
+          cname: '前台服务',
+          list: [
+            '行李寄存',
+            '24小时前台',
+            '24小时大堂经理',
+            '免费旅游交通图',
+            '邮政服务',
+            '前台保险柜',
+            '信用卡结算',
+            '一次性账单结算',
+            '快速办理入住',
+            '私人登记入住'
+          ]
+        },
+        {
+          cname: '餐饮服务',
+          list: [
+            '中餐厅',
+            '送餐服务',
+            '西餐厅',
+            '自助餐'
+          ]
+        },
+        {
+          cname: '商务服务',
+          list: [
+            '会议厅'
+          ]
+        },
+        {
+          cname: '商用设施',
+          list: [
+            '暖气',
+            '电梯',
+            '大堂吧',
+            '非经营性休息区',
+            '公共音响系统',
+            '无烟楼层',
+            '吸烟区',
+            '公共区监控系统'
+          ]
+        },
+        {
+          cname: '其他服务',
+          list: [
+            '婚宴服务',
+            '外送洗衣'
+          ]
+        }
+      ],
+      infoList: [
+        {
+          text: '酒店政策',
+          value: '入住时间: 14:00以后 离店时间: 12:00以前'
+        },
+        {
+          text: '儿童与加床',
+          value: '不接受18岁以下客人单独入住'
+        },
+        {
+          text: '膳食安排',
+          value: '自助早餐 RMB38'
+        },
+        {
+          text: '宠物',
+          value: '不可携带宠物'
+        }
+      ]
     }
 
     methods = {
+      roomtap(i) {
+        this.roomList.map((v, j) => {
+          v.expand = i === j ? !v.expand : !1
+        })
+      }
+    }
+
+    onLoad() {
     }
   }
 </script>

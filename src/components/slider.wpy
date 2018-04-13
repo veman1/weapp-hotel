@@ -24,7 +24,7 @@
 
   export default class Slider extends wepy.component {
     props = {
-      list: Array
+      list: {}
     }
   }
 </script>
