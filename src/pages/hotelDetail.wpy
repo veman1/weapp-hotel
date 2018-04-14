@@ -194,8 +194,10 @@
     flex-wrap: wrap;
     padding: 0 50rpx 20rpx;
     > text {
+      box-sizing: border-box;
       width: 33.33%;
-      margin: .4em 0 0;
+      padding: 0 .5em 0 0;
+      margin: .4em 0 .2em;
     }
   }
   .ititle2 {
@@ -208,12 +210,11 @@
     background-color: #fff;
     padding: .65em .55em;
   }
-</style> 
+</style>
 
 <template>
   <view class="g-banner">
     <slider :list.sync="gallery"></slider>
-
     <view class="bannerbottom">
       <text>维也纳酒店</text>
       <view class="button">
@@ -225,7 +226,7 @@
 
   <view class="g-cells">
     <view class="panel">
-      <cell>
+      <cell :to="">
         <view class="comment" slot="bd">
           <text class="score">4.6</text>
           <text>分</text>
@@ -244,16 +245,16 @@
   </view>
 
   <view class="time">
-    <picker mode="date">
+    <picker mode="date" @change="pickerchange('arrive')">
       <view class="item">
-        <text>12月25日</text>
-        <view>今天 入住</view>
+        <text>{{arrive.date[1]}}月{{arrive.date[2]}}日</text>
+        <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isAft ? '后天 ' : ''}}入住</view>
       </view>
     </picker>
-    <picker mode="date">
+    <picker mode="date" @change="pickerchange(leave)">
       <view class="item">
-        <text>12月26日</text>
-        <view>今天 离店</view>
+        <text>{{leave.date[1]}}月{{leave.date[2]}}日</text>
+        <view>{{leave.isTd ? '今天 ' : leave.isTmr ? '明天 ' : leave.isAft ? '后天 ' : ''}}离店</view>
       </view>
     </picker>
   </view>
@@ -318,6 +319,8 @@
     }
 
     data = {
+      arrive: {},
+      leave: {},
       gallery: new Array(4).fill(bannerImg),
       roomList: [
         {
@@ -373,7 +376,7 @@
         {
           cname: '前台服务',
           list: [
-            '行李寄存',
+            '行李寄存行李寄存行李寄存行李寄存',
             '24小时前台',
             '24小时大堂经理',
             '免费旅游交通图',
@@ -441,7 +444,16 @@
       ]
     }
 
+    watch = {
+      arrive() {},
+      leave() {}
+    }
+
     methods = {
+      pickerchange (id, {detail: {value}}) {
+        this.changeDate(id, new Date(value).toLocaleDateString().split('/'))
+        // const date = new Date(value).toLocaleDateString().split('/')
+      },
       roomtap(i) {
         this.roomList.map((v, j) => {
           v.expand = i === j ? !v.expand : !1
@@ -450,6 +462,26 @@
     }
 
     onLoad() {
+    }
+
+    changeDate (id, date) {
+      // const date = new Date(e.detail.value).toLocaleDateString().split('/')
+      const now = new Date().toLocaleDateString().split('/')
+
+      this[id].date = date
+
+      if (date[0] === now[0] && date[1] === now[1]) {
+        if (date[2] === now[2]) {
+          var isTd = !0
+        } else if (date[2] == Number(now[2]) + 1) {
+          var isTmr = !0
+        } else if (date[2] == Number(now[2]) + 2) {
+          var isAft = !0
+        }
+      }
+      this[id].isTd = isTd
+      this[id].isTmr = isTmr
+      this[id].isAft = isAft
     }
   }
 </script>
