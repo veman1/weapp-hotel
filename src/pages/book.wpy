@@ -7,6 +7,5 @@
 <script>
 import wepy from 'wepy'
 export default class Book extends wepy.page {
-  
 }
 </script>

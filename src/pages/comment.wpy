@@ -1,0 +1,16 @@
+<style>
+</style>
+
+<template>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Comment extends wepy.page {
+    config = {
+      navigationBarTitleText: '评论列表'
+    }
+  }
+</script>

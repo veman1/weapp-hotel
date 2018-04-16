@@ -226,7 +226,7 @@
 
   <view class="g-cells">
     <view class="panel">
-      <cell :to="">
+      <cell @tap.user="toComment">
         <view class="comment" slot="bd">
           <text class="score">4.6</text>
           <text>分</text>
@@ -234,7 +234,7 @@
         </view>
         <text slot="fttext">点评</text>
       </cell>
-      <cell>
+      <cell @tap.user="showLocation">
         <view class="address" slot="bd">
           <view>桂澜北路</view>
           <text>【千灯湖、桂城】</text>
@@ -247,20 +247,20 @@
   <view class="time">
     <picker mode="date" @change="pickerchange('arrive')">
       <view class="item">
-        <text>{{arrive.date[1]}}月{{arrive.date[2]}}日</text>
-        <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isAft ? '后天 ' : ''}}入住</view>
+        <text>{{arrive.m}}月{{arrive.d}}日</text>
+        <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isDATmr ? '后天 ' : ''}}入住</view>
       </view>
     </picker>
     <picker mode="date" @change="pickerchange(leave)">
       <view class="item">
-        <text>{{leave.date[1]}}月{{leave.date[2]}}日</text>
-        <view>{{leave.isTd ? '今天 ' : leave.isTmr ? '明天 ' : leave.isAft ? '后天 ' : ''}}离店</view>
+        <text>{{leave.m}}月{{leave.d}}日</text>
+        <view>{{leave.isTd ? '今天 ' : leave.isTmr ? '明天 ' : leave.isDATmr ? '后天 ' : ''}}离店</view>
       </view>
     </picker>
   </view>
 
   <view class="rooms">
-    <view wx:for="{{ roomList }}" class="room {{ item.expand ? 'expand' : '' }}">
+    <view wx:for="{{ hotel.roomList }}" class="room {{ item.expand ? 'expand' : '' }}">
       <view class="rtitle" @tap="roomtap({{ index }})">
         <image src="{{ item.img }}" />
         <text>标准双床房</text>
@@ -282,7 +282,7 @@
   <view class="facility">
     <view class="ititle">酒店设施</view>
     <view class="flist">
-      <view class="fitem" wx:for="{{facility_list}}">
+      <view class="fitem" wx:for="{{hotel.facility_list}}">
         <view class="ititle2">{{item.cname}}</view>
         <view class="ilist--flex">
           <text wx:for="{{item.list}}">{{item}}</text>
@@ -292,7 +292,7 @@
   </view>
 
   <view class="info_list">
-    <view class="item" wx:for="{{ infoList }}">
+    <view class="item" wx:for="{{ hotel.infoList }}">
       <view class="ititle">{{item.text}}</view>
       <view class="icontent">{{item.value}}</view>
     </view>
@@ -321,167 +321,200 @@
     data = {
       arrive: {},
       leave: {},
-      gallery: new Array(4).fill(bannerImg),
-      roomList: [
-        {
-          img: bannerImg,
-          priceList: [
-            { id: '3' },
-            { id: '4' },
-            { id: '5' }
-          ]
-        },
-        {
-          img: bannerImg,
-          priceList: [
-            { id: '3' },
-            { id: '4' },
-            { id: '5' }
-          ]
-        },
-        {
-          img: bannerImg,
-          priceList: [
-            { id: '3' },
-            { id: '4' },
-            { id: '5' }
-          ]
-        }
-      ],
-      facility_list: [
-        {
-          cname: '网络',
-          list: [
-            '客房WiFi免费',
-            '房间内高速上网',
-            '公用区WiFi免费'
-          ]
-        },
-        {
-          cname: '交通服务',
-          list: [
-            '免费停车场',
-            '叫车服务'
-          ]
-        },
-        {
-          cname: '休闲娱乐',
-          list: [
-            '按摩室',
-            '桌球室',
-            '棋牌室',
-            'KTV'
-          ]
-        },
-        {
-          cname: '前台服务',
-          list: [
-            '行李寄存行李寄存行李寄存行李寄存',
-            '24小时前台',
-            '24小时大堂经理',
-            '免费旅游交通图',
-            '邮政服务',
-            '前台保险柜',
-            '信用卡结算',
-            '一次性账单结算',
-            '快速办理入住',
-            '私人登记入住'
-          ]
-        },
-        {
-          cname: '餐饮服务',
-          list: [
-            '中餐厅',
-            '送餐服务',
-            '西餐厅',
-            '自助餐'
-          ]
-        },
-        {
-          cname: '商务服务',
-          list: [
-            '会议厅'
-          ]
-        },
-        {
-          cname: '商用设施',
-          list: [
-            '暖气',
-            '电梯',
-            '大堂吧',
-            '非经营性休息区',
-            '公共音响系统',
-            '无烟楼层',
-            '吸烟区',
-            '公共区监控系统'
-          ]
-        },
-        {
-          cname: '其他服务',
-          list: [
-            '婚宴服务',
-            '外送洗衣'
-          ]
-        }
-      ],
-      infoList: [
-        {
-          text: '酒店政策',
-          value: '入住时间: 14:00以后 离店时间: 12:00以前'
-        },
-        {
-          text: '儿童与加床',
-          value: '不接受18岁以下客人单独入住'
-        },
-        {
-          text: '膳食安排',
-          value: '自助早餐 RMB38'
-        },
-        {
-          text: '宠物',
-          value: '不可携带宠物'
-        }
-      ]
+      hotel: {
+        gallery: new Array(4).fill(bannerImg),
+        roomList: [
+          {
+            img: bannerImg,
+            priceList: [
+              { id: '3' },
+              { id: '4' },
+              { id: '5' }
+            ]
+          },
+          {
+            img: bannerImg,
+            priceList: [
+              { id: '3' },
+              { id: '4' },
+              { id: '5' }
+            ]
+          },
+          {
+            img: bannerImg,
+            priceList: [
+              { id: '3' },
+              { id: '4' },
+              { id: '5' }
+            ]
+          }
+        ],
+        facility_list: [
+          {
+            cname: '网络',
+            list: [
+              '客房WiFi免费',
+              '房间内高速上网',
+              '公用区WiFi免费'
+            ]
+          },
+          {
+            cname: '交通服务',
+            list: [
+              '免费停车场',
+              '叫车服务'
+            ]
+          },
+          {
+            cname: '休闲娱乐',
+            list: [
+              '按摩室',
+              '桌球室',
+              '棋牌室',
+              'KTV'
+            ]
+          },
+          {
+            cname: '前台服务',
+            list: [
+              '行李寄存',
+              '24小时前台',
+              '24小时大堂经理',
+              '免费旅游交通图',
+              '邮政服务',
+              '前台保险柜',
+              '信用卡结算',
+              '一次性账单结算',
+              '快速办理入住',
+              '私人登记入住'
+            ]
+          },
+          {
+            cname: '餐饮服务',
+            list: [
+              '中餐厅',
+              '送餐服务',
+              '西餐厅',
+              '自助餐'
+            ]
+          },
+          {
+            cname: '商务服务',
+            list: [
+              '会议厅'
+            ]
+          },
+          {
+            cname: '商用设施',
+            list: [
+              '暖气',
+              '电梯',
+              '大堂吧',
+              '非经营性休息区',
+              '公共音响系统',
+              '无烟楼层',
+              '吸烟区',
+              '公共区监控系统'
+            ]
+          },
+          {
+            cname: '其他服务',
+            list: [
+              '婚宴服务',
+              '外送洗衣'
+            ]
+          }
+        ],
+        infoList: [
+          {
+            text: '酒店政策',
+            value: '入住时间: 14:00以后 离店时间: 12:00以前'
+          },
+          {
+            text: '儿童与加床',
+            value: '不接受18岁以下客人单独入住'
+          },
+          {
+            text: '膳食安排',
+            value: '自助早餐 RMB38'
+          },
+          {
+            text: '宠物',
+            value: '不可携带宠物'
+          }
+        ]
+      }
+    }
+
+    computed = {
+      hotel () {
+        this.gallery = this.hotel.gallery
+        return this.hotel
+      }
     }
 
     watch = {
-      arrive() {},
-      leave() {}
+      arrive () {},
+      leave () {}
     }
 
     methods = {
+
       pickerchange (id, {detail: {value}}) {
-        this.changeDate(id, new Date(value).toLocaleDateString().split('/'))
-        // const date = new Date(value).toLocaleDateString().split('/')
+        this.setDate(id, new Date(value))
       },
-      roomtap(i) {
+
+      roomtap (i) {
         this.roomList.map((v, j) => {
           v.expand = i === j ? !v.expand : !1
         })
+      },
+
+      toComment () {
+        wepy.navigateTo({ url: `/pages/comment` })
+      },
+
+      showLocation () {
+        wepy.openLocation({
+
+        })
       }
+
     }
 
-    onLoad() {
+    onLoad () {
+      console.log(wepy)
+      // this.getHotelById()
+      this.setDate('arrive', new Date())
+      this.setDate('leave', new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
     }
 
-    changeDate (id, date) {
-      // const date = new Date(e.detail.value).toLocaleDateString().split('/')
-      const now = new Date().toLocaleDateString().split('/')
+    setDate (id, date) {
+      const now = new Date()
+
+      const tmr = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+      const dATmr = new Date(now.getTime() + 48 * 60 * 60 * 1000)
+
+      if (date.toDateString() === now.toDateString()) {
+        var isTd = !0
+      } else if (date.toDateString() === tmr.toDateString()) {
+        var isTmr = !0
+      } else if (date.toDateString() === dATmr.toDateString()) {
+        var isDATmr = !0
+      }
 
       this[id].date = date
+      this[id].y = date.getFullYear()
+      this[id].m = date.getMonth()
+      this[id].d = date.getDate()
+      this[id].isTd = Boolean(isTd)
+      this[id].isTmr = Boolean(isTmr)
+      this[id].isDATmr = Boolean(isDATmr)
+    }
 
-      if (date[0] === now[0] && date[1] === now[1]) {
-        if (date[2] === now[2]) {
-          var isTd = !0
-        } else if (date[2] == Number(now[2]) + 1) {
-          var isTmr = !0
-        } else if (date[2] == Number(now[2]) + 2) {
-          var isAft = !0
-        }
-      }
-      this[id].isTd = isTd
-      this[id].isTmr = isTmr
-      this[id].isAft = isAft
+    getHotelById () {
+      wepy.request(`https://www.baidu.com`).then(res => {
+      })
     }
   }
 </script>

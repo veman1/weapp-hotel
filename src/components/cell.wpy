@@ -13,10 +13,8 @@
     }
     .cell__bd {
       max-width: 90%;
-      flex-shrink: 1;
     }
     .cell__ft {
-      flex-shrink: 0;
       display: flex;
       align-items: center;
       white-space: nowrap;
@@ -38,7 +36,7 @@
 </style>
 
 <template>
-  <view class="cell">
+  <view class="cell" @tap="tap">
     <view class="cell__bd">
       <slot name="bd"></slot>
     </view>
@@ -54,6 +52,14 @@
   export default class Cell extends wepy.component {
     props = {
       fttext: ''
+    }
+
+    methods = {
+
+      tap () {
+        this.$emit('tap')
+      }
+
     }
   }
 </script>
