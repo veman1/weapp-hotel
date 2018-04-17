@@ -216,8 +216,8 @@
   <view class="g-banner">
     <slider :list.sync="gallery"></slider>
     <view class="bannerbottom">
-      <text>维也纳酒店</text>
-      <view class="button">
+      <text>{{hotel.name}}</text>
+      <view wx:if="{{ !camButtonHide }}" class="button">
         <image mode="aspectFit" src="/images/hdetail_camera.png" />
         <text>相册</text>
       </view>
@@ -226,26 +226,28 @@
 
   <view class="g-cells">
     <view class="panel">
-      <cell @tap.user="toComment">
+
+      <cell1 ft="点评" @tap.user="toComment">
         <view class="comment" slot="bd">
-          <text class="score">4.6</text>
-          <text>分</text>
-          <view>366条点评</view>
+          <text class="score">{{hotel.score}}</text>
+          <text>{{hotel.score}}分</text>
+          <view>{{hotel.comment_count}}条点评</view>
         </view>
-        <text slot="fttext">点评</text>
-      </cell>
-      <cell @tap.user="showLocation">
+      </cell1>
+
+      <cell2 ft="地图" @tap.user="showLocation">
         <view class="address" slot="bd">
-          <view>桂澜北路</view>
-          <text>【千灯湖、桂城】</text>
+          <view>{{hotel.address}}</view>
+          <text>【{{hotel.region}}】</text>
         </view>
         <text slot="fttext">地图</text>
-      </cell>
+      </cell2>
+
     </view>
   </view>
 
   <view class="time">
-    <picker mode="date" @change="pickerchange('arrive')">
+    <picker mode="date" @change="pickerchange(arrive)">
       <view class="item">
         <text>{{arrive.m}}月{{arrive.d}}日</text>
         <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isDATmr ? '后天 ' : ''}}入住</view>
@@ -305,7 +307,14 @@
   import Cell from '../components/cell'
   import Priceitem from '../components/priceitem'
 
-  var bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
+  const bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
+
+  const getHotelById = new Promise((resolve, reject) => {
+    wepy.request({
+      url: 'https://<apiUrl>',
+      success: res => resolve(res)
+    })
+  })
 
   export default class HotelDetail extends wepy.page {
     config = {
@@ -315,13 +324,23 @@
     components = {
       slider: Slider,
       priceitem: Priceitem,
-      cell: Cell
+      cell1: Cell,
+      cell2: Cell
     }
 
     data = {
+      camButtonHide: true,
+      ft: '点评',
       arrive: {},
       leave: {},
       hotel: {
+        name: '维也纳酒店',
+        region: '千灯湖、桂城',
+        address: '桂澜北路',
+        score: 4.6,
+        comment_count: 366,
+        latitude: 0,
+        longitude: 0,
         gallery: new Array(4).fill(bannerImg),
         roomList: [
           {
@@ -447,10 +466,12 @@
     }
 
     computed = {
+
       hotel () {
         this.gallery = this.hotel.gallery
         return this.hotel
       }
+
     }
 
     watch = {
@@ -465,9 +486,7 @@
       },
 
       roomtap (i) {
-        this.roomList.map((v, j) => {
-          v.expand = i === j ? !v.expand : !1
-        })
+        this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
       },
 
       toComment () {
@@ -476,15 +495,15 @@
 
       showLocation () {
         wepy.openLocation({
-
+          latitude: this.hotel.latitude,
+          longitude: this.hotel.longitude
         })
       }
 
     }
 
     onLoad () {
-      console.log(wepy)
-      // this.getHotelById()
+      getHotelById.then(({d}) => this.hotel = dd)
       this.setDate('arrive', new Date())
       this.setDate('leave', new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
     }
@@ -505,16 +524,11 @@
 
       this[id].date = date
       this[id].y = date.getFullYear()
-      this[id].m = date.getMonth()
+      this[id].m = date.getMonth() + 1
       this[id].d = date.getDate()
       this[id].isTd = Boolean(isTd)
       this[id].isTmr = Boolean(isTmr)
       this[id].isDATmr = Boolean(isDATmr)
-    }
-
-    getHotelById () {
-      wepy.request(`https://www.baidu.com`).then(res => {
-      })
     }
   }
 </script>
