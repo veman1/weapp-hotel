@@ -230,7 +230,7 @@
       <cell1 ft="点评" @tap.user="toComment">
         <view class="comment" slot="bd">
           <text class="score">{{hotel.score}}</text>
-          <text>{{hotel.score}}分</text>
+          <text>分</text>
           <view>{{hotel.comment_count}}条点评</view>
         </view>
       </cell1>
@@ -247,13 +247,13 @@
   </view>
 
   <view class="time">
-    <picker mode="date" @change="pickerchange(arrive)">
+    <picker mode="date" @change="selectDate(arrive)">
       <view class="item">
         <text>{{arrive.m}}月{{arrive.d}}日</text>
         <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isDATmr ? '后天 ' : ''}}入住</view>
       </view>
     </picker>
-    <picker mode="date" @change="pickerchange(leave)">
+    <picker mode="date" @change="selectDate(leave)">
       <view class="item">
         <text>{{leave.m}}月{{leave.d}}日</text>
         <view>{{leave.isTd ? '今天 ' : leave.isTmr ? '明天 ' : leave.isDATmr ? '后天 ' : ''}}离店</view>
@@ -306,15 +306,31 @@
   import Slider from '../components/slider'
   import Cell from '../components/cell'
   import Priceitem from '../components/priceitem'
+  const app = getApp()
 
   const bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
 
-  const getHotelById = new Promise((resolve, reject) => {
-    wepy.request({
-      url: 'https://<apiUrl>',
-      success: res => resolve(res)
+  function getHotelById (id) {
+    return new Promise((resolve, reject) => {
+      wepy.showLoading()
+      wepy.request({
+        url: `https://<apiUrl>?id=${id}`,
+        success: res => {
+          resolve(res)
+        },
+        fail: res => {
+          reject(res)
+        },
+        complete: res => {
+          wepy.hideLoading()
+        }
+      })
     })
-  })
+  }
+
+  function showErr (t) {
+    wepy.showToast({ title: t, image: '/images/error.png' })
+  }
 
   export default class HotelDetail extends wepy.page {
     config = {
@@ -330,7 +346,7 @@
 
     data = {
       camButtonHide: true,
-      ft: '点评',
+      today: {},
       arrive: {},
       leave: {},
       hotel: {
@@ -475,21 +491,29 @@
     }
 
     watch = {
+      today () {},
       arrive () {},
       leave () {}
     }
 
     methods = {
 
-      pickerchange (id, {detail: {value}}) {
-        this.setDate(id, new Date(value))
+      selectDate (id, {detail: {value}}) {
+        const d = new Date(value)
+        const now = new Date()
+
+        if (id === 'arrive') {
+          +d < +this.leave.date && +d >= +now ? this.setDate(id, d) : showErr('请选择有效日期')
+        } else if (id === 'leave') {
+          +d > +this.arrive.date ? this.setDate(id, d) : showErr('请选择有效日期')
+        }
       },
 
       roomtap (i) {
         this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
       },
 
-      toComment () {
+      toComment () { 
         wepy.navigateTo({ url: `/pages/comment` })
       },
 
@@ -502,8 +526,11 @@
 
     }
 
-    onLoad () {
-      getHotelById.then(({d}) => this.hotel = dd)
+    onLoad (o) {
+      console.log(new Date().offsetDay(10))
+      console.log(app)
+      getHotelById(o.id).then(({d}) => this.hotel = d).catch(err => console.log('err:', err))
+      this.setDate('today', new Date())
       this.setDate('arrive', new Date())
       this.setDate('leave', new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
     }
@@ -511,8 +538,8 @@
     setDate (id, date) {
       const now = new Date()
 
-      const tmr = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-      const dATmr = new Date(now.getTime() + 48 * 60 * 60 * 1000)
+      const tmr = new Date().offsetDay(1)
+      const dATmr = new Date().offsetDay(2)
 
       if (date.toDateString() === now.toDateString()) {
         var isTd = !0
@@ -523,6 +550,7 @@
       }
 
       this[id].date = date
+      this[id].dateStr = date.toDateString()
       this[id].y = date.getFullYear()
       this[id].m = date.getMonth() + 1
       this[id].d = date.getDate()

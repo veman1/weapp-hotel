@@ -7,6 +7,16 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
+const api = require('./api')
+
+// 拓展时间对象
+Date.prototype.offsetDay = function (num) {
+  return new Date(+this + num * 24 * 60 * 60 * 1000)
+}
+
+wepy.showError = function () {
+  wepy.showToast({ title: 'error' })
+}
 
 export default class extends wepy.app {
   config = {
