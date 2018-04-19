@@ -1,6 +1,6 @@
 const host = 'https://_/WXAPI'
 
-function request (url) {
+function r (url) {
   return new Promise((resolve, reject) => {
     wx.request({
       url: `${host}${url}`,
@@ -10,6 +10,6 @@ function request (url) {
   })
 }
 
-export default {
-  getHotelById: (id) => request(`<api>?id=${id}`)
+module.exports =  {
+  getHotelById: (id) => r(`<api>?id=${id}`)
 }

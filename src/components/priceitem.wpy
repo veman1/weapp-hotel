@@ -73,10 +73,10 @@
 
 <template>
   <view class="price_item">
-    <view class="title">特惠价</view>
-    <view class="feature">双份早餐 大床 2人</view>
-    <view class="price">￥243</view>
-    <b @tap="book({{ id }})" />
+    <view class="title">{{info.name}}</view>
+    <view class="feature">{{info.desc}}</view>
+    <view class="price">￥{{info.price}}</view>
+    <b @tap="tap" />
   </view>
 </template>
 
@@ -84,15 +84,9 @@
   import wepy from 'wepy'
 
   export default class Priceitem extends wepy.component {
-    props = {
-      id: {}
-    }
-
     methods = {
-      book(id) {
-        wepy.navigateTo({
-          url: `/pages/book?id=${id}`
-        })
+      tap() {
+        this.$emit('tap')
       }
     }
   }

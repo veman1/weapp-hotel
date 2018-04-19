@@ -178,6 +178,13 @@
 
   .flist {
     background-color: #fff;
+    .fitem {
+      margin: 20rpx 0 0;
+    }
+    &:before {
+      content: '';
+      display: table;
+    }
   }
 
   .ititle {
@@ -214,7 +221,7 @@
 
 <template>
   <view class="g-banner">
-    <slider :list.sync="gallery"></slider>
+    <slider :list="gallery"></slider>
     <view class="bannerbottom">
       <text>{{hotel.name}}</text>
       <view wx:if="{{ !camButtonHide }}" class="button">
@@ -240,7 +247,6 @@
           <view>{{hotel.address}}</view>
           <text>【{{hotel.region}}】</text>
         </view>
-        <text slot="fttext">地图</text>
       </cell2>
 
     </view>
@@ -275,7 +281,7 @@
       </view>
       <view class="plist">
         <repeat for="{{ item.priceList }}">
-          <priceitem :id.sync="item.id"></priceitem>
+          <priceitem :info="item" @tap.user="booktap"></priceitem>
         </repeat>
       </view>
     </view>
@@ -306,31 +312,16 @@
   import Slider from '../components/slider'
   import Cell from '../components/cell'
   import Priceitem from '../components/priceitem'
-  const app = getApp()
+  import api from '../api'
 
-  const bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
-
-  function getHotelById (id) {
-    return new Promise((resolve, reject) => {
-      wepy.showLoading()
-      wepy.request({
-        url: `https://<apiUrl>?id=${id}`,
-        success: res => {
-          resolve(res)
-        },
-        fail: res => {
-          reject(res)
-        },
-        complete: res => {
-          wepy.hideLoading()
-        }
-      })
+  function showErr (msg) {
+    wepy.showToast({
+      title: msg,
+      image: '/images/error.png'
     })
   }
 
-  function showErr (t) {
-    wepy.showToast({ title: t, image: '/images/error.png' })
-  }
+  const bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
 
   export default class HotelDetail extends wepy.page {
     config = {
@@ -346,7 +337,6 @@
 
     data = {
       camButtonHide: true,
-      today: {},
       arrive: {},
       leave: {},
       hotel: {
@@ -362,25 +352,25 @@
           {
             img: bannerImg,
             priceList: [
-              { id: '3' },
-              { id: '4' },
-              { id: '5' }
+              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
             ]
           },
           {
             img: bannerImg,
             priceList: [
-              { id: '3' },
-              { id: '4' },
-              { id: '5' }
+              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
             ]
           },
           {
             img: bannerImg,
             priceList: [
-              { id: '3' },
-              { id: '4' },
-              { id: '5' }
+              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
             ]
           }
         ],
@@ -482,81 +472,48 @@
     }
 
     computed = {
-
-      hotel () {
-        this.gallery = this.hotel.gallery
-        return this.hotel
-      }
-
+      gallery () {
+        return this.hotel.gallery
+      },
     }
 
     watch = {
-      today () {},
       arrive () {},
       leave () {}
     }
 
     methods = {
-
       selectDate (id, {detail: {value}}) {
-        const d = new Date(value)
-        const now = new Date()
-
-        if (id === 'arrive') {
-          +d < +this.leave.date && +d >= +now ? this.setDate(id, d) : showErr('请选择有效日期')
-        } else if (id === 'leave') {
-          +d > +this.arrive.date ? this.setDate(id, d) : showErr('请选择有效日期')
-        }
+        this[id] = new Date(value).format()
       },
-
-      roomtap (i) {
-        this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
-      },
-
       toComment () { 
         wepy.navigateTo({ url: `/pages/comment` })
       },
-
       showLocation () {
         wepy.openLocation({
           latitude: this.hotel.latitude,
           longitude: this.hotel.longitude
         })
+      },
+      roomtap (i) {
+        this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
+      },
+      booktap (id) {
+        console.log(id)
+        console.dir(this.arrive)
+        console.dir(this.leave)
       }
-
     }
 
     onLoad (o) {
-      console.log(new Date().offsetDay(10))
-      console.log(app)
-      getHotelById(o.id).then(({d}) => this.hotel = d).catch(err => console.log('err:', err))
-      this.setDate('today', new Date())
-      this.setDate('arrive', new Date())
-      this.setDate('leave', new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
-    }
-
-    setDate (id, date) {
-      const now = new Date()
-
-      const tmr = new Date().offsetDay(1)
-      const dATmr = new Date().offsetDay(2)
-
-      if (date.toDateString() === now.toDateString()) {
-        var isTd = !0
-      } else if (date.toDateString() === tmr.toDateString()) {
-        var isTmr = !0
-      } else if (date.toDateString() === dATmr.toDateString()) {
-        var isDATmr = !0
-      }
-
-      this[id].date = date
-      this[id].dateStr = date.toDateString()
-      this[id].y = date.getFullYear()
-      this[id].m = date.getMonth() + 1
-      this[id].d = date.getDate()
-      this[id].isTd = Boolean(isTd)
-      this[id].isTmr = Boolean(isTmr)
-      this[id].isDATmr = Boolean(isDATmr)
+      wepy.showLoading()
+      api.getHotelById(o.id)
+        .then(r => this.hotel = r.data)
+        .catch(e => showErr(e.errMsg))
+        .then(() => wepy.hideLoading())
+      this.arrive = new Date().format()
+      this.leave = new Date().offsetDay(1).format()
     }
   }
+
 </script>
