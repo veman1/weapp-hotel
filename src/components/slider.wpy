@@ -10,7 +10,7 @@
 </style>
 
 <template>
-  <swiper circular>
+  <swiper circular indicator-dots>
     <repeat for="{{ list }}">
       <swiper-item>
         <image src="{{ item }}" />
@@ -25,6 +25,9 @@
   export default class Slider extends wepy.component {
     props = {
       list: {}
+    }
+    onLoad () {
+      console.log(this.list)
     }
   }
 </script>

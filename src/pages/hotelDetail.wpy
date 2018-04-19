@@ -178,6 +178,13 @@
 
   .flist {
     background-color: #fff;
+    .fitem {
+      margin: 20rpx 0 0;
+    }
+    &:before {
+      content: '';
+      display: table;
+    }
   }
 
   .ititle {
@@ -214,10 +221,10 @@
 
 <template>
   <view class="g-banner">
-    <slider :list.sync="gallery"></slider>
+    <slider :list="gallery"></slider>
     <view class="bannerbottom">
-      <text>维也纳酒店</text>
-      <view class="button">
+      <text>{{hotel.name}}</text>
+      <view wx:if="{{ !camButtonHide }}" class="button">
         <image mode="aspectFit" src="/images/hdetail_camera.png" />
         <text>相册</text>
       </view>
@@ -226,32 +233,33 @@
 
   <view class="g-cells">
     <view class="panel">
-      <cell @tap.user="toComment">
+
+      <cell1 ft="点评" @tap.user="toComment">
         <view class="comment" slot="bd">
-          <text class="score">4.6</text>
+          <text class="score">{{hotel.score}}</text>
           <text>分</text>
-          <view>366条点评</view>
+          <view>{{hotel.comment_count}}条点评</view>
         </view>
-        <text slot="fttext">点评</text>
-      </cell>
-      <cell @tap.user="showLocation">
+      </cell1>
+
+      <cell2 ft="地图" @tap.user="showLocation">
         <view class="address" slot="bd">
-          <view>桂澜北路</view>
-          <text>【千灯湖、桂城】</text>
+          <view>{{hotel.address}}</view>
+          <text>【{{hotel.region}}】</text>
         </view>
-        <text slot="fttext">地图</text>
-      </cell>
+      </cell2>
+
     </view>
   </view>
 
   <view class="time">
-    <picker mode="date" @change="pickerchange('arrive')">
+    <picker mode="date" @change="selectDate(arrive)">
       <view class="item">
         <text>{{arrive.m}}月{{arrive.d}}日</text>
         <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isDATmr ? '后天 ' : ''}}入住</view>
       </view>
     </picker>
-    <picker mode="date" @change="pickerchange(leave)">
+    <picker mode="date" @change="selectDate(leave)">
       <view class="item">
         <text>{{leave.m}}月{{leave.d}}日</text>
         <view>{{leave.isTd ? '今天 ' : leave.isTmr ? '明天 ' : leave.isDATmr ? '后天 ' : ''}}离店</view>
@@ -273,7 +281,7 @@
       </view>
       <view class="plist">
         <repeat for="{{ item.priceList }}">
-          <priceitem :id.sync="item.id"></priceitem>
+          <priceitem :info="item" @tap.user="booktap"></priceitem>
         </repeat>
       </view>
     </view>
@@ -304,8 +312,16 @@
   import Slider from '../components/slider'
   import Cell from '../components/cell'
   import Priceitem from '../components/priceitem'
+  import api from '../api'
 
-  var bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
+  function showErr (msg) {
+    wepy.showToast({
+      title: msg,
+      image: '/images/error.png'
+    })
+  }
+
+  const bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
 
   export default class HotelDetail extends wepy.page {
     config = {
@@ -315,37 +331,46 @@
     components = {
       slider: Slider,
       priceitem: Priceitem,
-      cell: Cell
+      cell1: Cell,
+      cell2: Cell
     }
 
     data = {
+      camButtonHide: true,
       arrive: {},
       leave: {},
       hotel: {
+        name: '维也纳酒店',
+        region: '千灯湖、桂城',
+        address: '桂澜北路',
+        score: 4.6,
+        comment_count: 366,
+        latitude: 0,
+        longitude: 0,
         gallery: new Array(4).fill(bannerImg),
         roomList: [
           {
             img: bannerImg,
             priceList: [
-              { id: '3' },
-              { id: '4' },
-              { id: '5' }
+              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
             ]
           },
           {
             img: bannerImg,
             priceList: [
-              { id: '3' },
-              { id: '4' },
-              { id: '5' }
+              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
             ]
           },
           {
             img: bannerImg,
             priceList: [
-              { id: '3' },
-              { id: '4' },
-              { id: '5' }
+              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
+              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
             ]
           }
         ],
@@ -447,10 +472,9 @@
     }
 
     computed = {
-      hotel () {
-        this.gallery = this.hotel.gallery
-        return this.hotel
-      }
+      gallery () {
+        return this.hotel.gallery
+      },
     }
 
     watch = {
@@ -459,62 +483,37 @@
     }
 
     methods = {
-
-      pickerchange (id, {detail: {value}}) {
-        this.setDate(id, new Date(value))
+      selectDate (id, {detail: {value}}) {
+        this[id] = new Date(value).format()
       },
-
-      roomtap (i) {
-        this.roomList.map((v, j) => {
-          v.expand = i === j ? !v.expand : !1
-        })
-      },
-
-      toComment () {
+      toComment () { 
         wepy.navigateTo({ url: `/pages/comment` })
       },
-
       showLocation () {
         wepy.openLocation({
-
+          latitude: this.hotel.latitude,
+          longitude: this.hotel.longitude
         })
+      },
+      roomtap (i) {
+        this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
+      },
+      booktap (id) {
+        console.log(id)
+        console.dir(this.arrive)
+        console.dir(this.leave)
       }
-
     }
 
-    onLoad () {
-      console.log(wepy)
-      // this.getHotelById()
-      this.setDate('arrive', new Date())
-      this.setDate('leave', new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
-    }
-
-    setDate (id, date) {
-      const now = new Date()
-
-      const tmr = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-      const dATmr = new Date(now.getTime() + 48 * 60 * 60 * 1000)
-
-      if (date.toDateString() === now.toDateString()) {
-        var isTd = !0
-      } else if (date.toDateString() === tmr.toDateString()) {
-        var isTmr = !0
-      } else if (date.toDateString() === dATmr.toDateString()) {
-        var isDATmr = !0
-      }
-
-      this[id].date = date
-      this[id].y = date.getFullYear()
-      this[id].m = date.getMonth()
-      this[id].d = date.getDate()
-      this[id].isTd = Boolean(isTd)
-      this[id].isTmr = Boolean(isTmr)
-      this[id].isDATmr = Boolean(isDATmr)
-    }
-
-    getHotelById () {
-      wepy.request(`https://www.baidu.com`).then(res => {
-      })
+    onLoad (o) {
+      wepy.showLoading()
+      api.getHotelById(o.id)
+        .then(r => this.hotel = r.data)
+        .catch(e => showErr(e.errMsg))
+        .then(() => wepy.hideLoading())
+      this.arrive = new Date().format()
+      this.leave = new Date().offsetDay(1).format()
     }
   }
+
 </script>
