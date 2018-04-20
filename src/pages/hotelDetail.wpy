@@ -271,17 +271,17 @@
     <view wx:for="{{ hotel.roomList }}" class="room {{ item.expand ? 'expand' : '' }}">
       <view class="rtitle" @tap="roomtap({{ index }})">
         <image src="{{ item.img }}" />
-        <text>标准双床房</text>
-        <view class="stit">25m² 双床 3-5层</view>
+        <text>{{item.name}}</text>
+        <view class="stit">{{item.size}}m² {{item.bed_count}} {{item.floors}}</view>
         <view class="ft">
           <text class="unit">￥</text>
-          <text>261</text>起
+          <text>{{item.price}}</text>起
         </view>
         <i />
       </view>
       <view class="plist">
-        <repeat for="{{ item.priceList }}">
-          <priceitem :info="item" @tap.user="booktap"></priceitem>
+        <repeat for="{{ item.priceList }}" key="id">
+          <priceitem :info="item" :id="id" @booktap.user="booktap"></priceitem>
         </repeat>
       </view>
     </view>
@@ -309,17 +309,13 @@
 
 <script>
   import wepy from 'wepy'
+
   import Slider from '../components/slider'
   import Cell from '../components/cell'
   import Priceitem from '../components/priceitem'
-  import api from '../api'
 
-  function showErr (msg) {
-    wepy.showToast({
-      title: msg,
-      image: '/images/error.png'
-    })
-  }
+  import api from '../api'
+  import w from '../w'
 
   const bannerImg = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
 
@@ -350,7 +346,12 @@
         gallery: new Array(4).fill(bannerImg),
         roomList: [
           {
+            name: '标准双床房',
+            size: '25',
+            bed_count: '双床',
+            floors: '3-5层',
             img: bannerImg,
+            price: '261',
             priceList: [
               { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
               { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
@@ -358,7 +359,12 @@
             ]
           },
           {
+            name: '标准双床房',
+            size: '25',
+            bed_count: '双床',
+            floors: '3-5层',
             img: bannerImg,
+            price: '261',
             priceList: [
               { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
               { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
@@ -366,7 +372,12 @@
             ]
           },
           {
+            name: '标准双床房',
+            size: '25',
+            bed_count: '双床',
+            floors: '3-5层',
             img: bannerImg,
+            price: '261',
             priceList: [
               { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
               { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
@@ -499,9 +510,10 @@
         this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
       },
       booktap (id) {
-        console.log(id)
-        console.dir(this.arrive)
-        console.dir(this.leave)
+        wepy.navigateTo({ url: `/pages/order?id=${id}
+          &id2=2
+          &id3=3
+        ` })
       }
     }
 
@@ -509,7 +521,7 @@
       wepy.showLoading()
       api.getHotelById(o.id)
         .then(r => this.hotel = r.data)
-        .catch(e => showErr(e.errMsg))
+        .catch(e => w.showErr(e.errMsg))
         .then(() => wepy.hideLoading())
       this.arrive = new Date().format()
       this.leave = new Date().offsetDay(1).format()

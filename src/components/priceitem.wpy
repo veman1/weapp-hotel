@@ -76,7 +76,7 @@
     <view class="title">{{info.name}}</view>
     <view class="feature">{{info.desc}}</view>
     <view class="price">￥{{info.price}}</view>
-    <b @tap="tap" />
+    <b @tap="booktap(id)" />
   </view>
 </template>
 
@@ -84,9 +84,12 @@
   import wepy from 'wepy'
 
   export default class Priceitem extends wepy.component {
+    props = {
+      id: {}
+    }
     methods = {
-      tap() {
-        this.$emit('tap')
+      booktap () {
+        this.$emit('booktap', this.id)
       }
     }
   }

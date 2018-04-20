@@ -9,12 +9,11 @@ import wepy from 'wepy'
 import './date'
 
 export default class extends wepy.app {
-
   config = {
     pages: [
       'pages/index',
       'pages/hotelDetail',
-      'pages/book',
+      'pages/order',
       'pages/comment'
     ],
     window: {
@@ -23,6 +22,13 @@ export default class extends wepy.app {
       navigationBarTitleText: '订酒店',
       navigationBarTextStyle: 'black'
     }
+  }
+
+  showErr (msg) {
+    wepy.showToast({
+      title: msg,
+      image: '/images/error.png'
+    })
   }
 }
 </script>
