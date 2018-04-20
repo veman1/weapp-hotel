@@ -1,0 +1,36 @@
+<style lang="less"></style>
+
+<template>
+  <orderbox 
+    :rname="roomName"
+    :pname="priceName"
+    :arrive="arrive"
+    :leave="leave"
+    :bed="bed"
+    :break="breakfast"
+  />
+</template>
+
+<script>
+import wepy from 'wepy'
+import Orderbox from '../components/orderbox'
+
+export default class Order extends wepy.page {
+  config = {
+    navigationBarTitleText: '立即下单'
+  }
+
+  components = {
+    orderbox: Orderbox
+  }
+
+  data = {
+  }
+
+  methods = {
+  }
+
+  onLoad (o) {
+  }
+}
+</script>

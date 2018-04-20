@@ -1,0 +1,15 @@
+<style lang="less"></style>
+
+<template>
+  <view>name: {{name}}</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+
+export default class Orderbox extends wepy.component {
+  props = {
+    name: {}
+  }
+}
+</script>
