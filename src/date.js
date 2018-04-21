@@ -17,6 +17,7 @@ Date.prototype.format = function () {
 
   const d = {}
   d.date = this
+  d.dateStr = this.toDateString()
   d.y = this.getFullYear()
   d.m = this.getMonth() + 1
   d.d = this.getDate()

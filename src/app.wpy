@@ -1,10 +1,5 @@
-<style lang="less">
-  page {
-    font-size: 26rpx;
-  }
-</style>
-
 <script>
+
 import wepy from 'wepy'
 import './date'
 
@@ -31,4 +26,11 @@ export default class extends wepy.app {
     })
   }
 }
+
 </script>
+
+<style lang="less">
+  page {
+    font-size: 26rpx;
+  }
+</style>

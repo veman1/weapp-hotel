@@ -253,13 +253,13 @@
   </view>
 
   <view class="time">
-    <picker mode="date" @change="selectDate(arrive)">
+    <picker mode="date" start="{{arrive.dateStr}}" value="{{arrive.dateStr}}" @change="selectDate(arrive)">
       <view class="item">
         <text>{{arrive.m}}月{{arrive.d}}日</text>
         <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isDATmr ? '后天 ' : ''}}入住</view>
       </view>
     </picker>
-    <picker mode="date" @change="selectDate(leave)">
+    <picker mode="date" start="{{leave.dateStr}}" value="{{leave.dateStr}}" @change="selectDate(leave)">
       <view class="item">
         <text>{{leave.m}}月{{leave.d}}日</text>
         <view>{{leave.isTd ? '今天 ' : leave.isTmr ? '明天 ' : leave.isDATmr ? '后天 ' : ''}}离店</view>
@@ -510,10 +510,8 @@
         this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
       },
       booktap (id) {
-        wepy.navigateTo({ url: `/pages/order?id=${id}
-          &id2=2
-          &id3=3
-        ` })
+        if (this.arrive.date < this.leave.date) wepy.navigateTo({ url: `/pages/order?id=${id}` })
+        else w.showErr('请选择有效日期')
       }
     }
 
