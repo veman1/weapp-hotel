@@ -280,8 +280,8 @@
         <i />
       </view>
       <view class="plist">
-        <repeat for="{{ item.priceList }}" key="id">
-          <priceitem :info="item" :id="id" @booktap.user="booktap"></priceitem>
+        <repeat for="{{ item.priceList }}" index="pindex">
+          <priceitem :info="item" :pindex="pindex" :index="index" @booktap.user="booktap"></priceitem>
         </repeat>
       </view>
     </view>
@@ -353,9 +353,30 @@
             img: bannerImg,
             price: '261',
             priceList: [
-              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
-              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
-              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              },
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              },
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              }
             ]
           },
           {
@@ -366,9 +387,30 @@
             img: bannerImg,
             price: '261',
             priceList: [
-              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
-              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
-              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              },
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              },
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              }
             ]
           },
           {
@@ -379,9 +421,30 @@
             img: bannerImg,
             price: '261',
             priceList: [
-              { id: '3', name: '特惠价', desc: '双份早餐 大床 2人', price: '245' },
-              { id: '4', name: '标准价', desc: '双份早餐 大床 2人', price: '245' },
-              { id: '5', name: '标准价2', desc: '双份早餐 大床 2人', price: '245' }
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              },
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              },
+              { 
+                id: '3', name: '特惠价',
+                desc: '双份早餐 大床 2人',
+                breakfast: '双份早餐',
+                beds: '大床',
+                people: '2',
+                price: '245'
+              }
             ]
           }
         ],
@@ -495,7 +558,7 @@
 
     methods = {
       selectDate (id, {detail: {value}}) {
-        this[id] = new Date(value).format()
+        this.$parent[id] = this[id] = new Date(value).format()
       },
       toComment () { 
         wepy.navigateTo({ url: `/pages/comment` })
@@ -521,8 +584,8 @@
         .then(r => this.hotel = r.data)
         .catch(e => w.showErr(e.errMsg))
         .then(() => wepy.hideLoading())
-      this.arrive = new Date().format()
-      this.leave = new Date().offsetDay(1).format()
+      this.$parent.arrive = this.arrive = new Date().format()
+      this.$parent.leave = this.leave = new Date().offsetDay(1).format()
     }
   }
 

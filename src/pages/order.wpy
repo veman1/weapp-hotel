@@ -31,6 +31,10 @@ export default class Order extends wepy.page {
   }
 
   onLoad (o) {
+    this.arrive = this.$parent.arrive
+    this.leave = this.$parent.leave
+    console.log(this.arrive)
+    console.log(this.leave)
   }
 }
 </script>
