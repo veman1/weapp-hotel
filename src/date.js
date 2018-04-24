@@ -4,6 +4,10 @@ Date.prototype.offsetDay = function (num = 0) {
 Date.prototype.format = function () {
   const now = new Date()
 
+  this.setHours(0)
+  this.setMinutes(0)
+  this.setSeconds(0)
+
   const tmr = now.offsetDay(1)
   const dATmr = now.offsetDay(2)
 

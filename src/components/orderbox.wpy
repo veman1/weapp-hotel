@@ -2,14 +2,16 @@
 
 <template>
   <view>name: {{name}}</view>
+  <view>m: {{arrive.m}}</view>
 </template>
 
 <script>
 import wepy from 'wepy'
 
 export default class Orderbox extends wepy.component {
-  props = {
-    name: {}
+  data = {
+    arrive: {},
+    leave: {}
   }
 }
 </script>

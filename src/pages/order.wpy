@@ -2,13 +2,12 @@
 
 <template>
   <orderbox 
-    :rname="roomName"
-    :pname="priceName"
-    :arrive="arrive"
-    :leave="leave"
-    :bed="bed"
-    :break="breakfast"
-  />
+    :rname.sync="roomName"
+    :pname.sync="priceName"
+    :arrive.sync="arrive"
+    :leave.sync="leave"
+    :bed.sync="bed"
+    :break.sync="breakfast"
 </template>
 
 <script>
@@ -25,16 +24,17 @@ export default class Order extends wepy.page {
   }
 
   data = {
+    arrive: {},
+    leave: {},
   }
 
   methods = {
   }
 
   onLoad (o) {
+    this.name = 'tom'
     this.arrive = this.$parent.arrive
     this.leave = this.$parent.leave
-    console.log(this.arrive)
-    console.log(this.leave)
   }
 }
 </script>

@@ -253,13 +253,13 @@
   </view>
 
   <view class="time">
-    <picker mode="date" start="{{arrive.dateStr}}" value="{{arrive.dateStr}}" @change="selectDate(arrive)">
+    <picker mode="date" start="{{arriveStart.dateStr}}" value="{{arrive.dateStr}}" @change="selectDate(arrive)">
       <view class="item">
         <text>{{arrive.m}}月{{arrive.d}}日</text>
         <view>{{arrive.isTd ? '今天 ' : arrive.isTmr ? '明天 ' : arrive.isDATmr ? '后天 ' : ''}}入住</view>
       </view>
     </picker>
-    <picker mode="date" start="{{leave.dateStr}}" value="{{leave.dateStr}}" @change="selectDate(leave)">
+    <picker mode="date" start="{{leaveStart.dateStr}}" value="{{leave.dateStr}}" @change="selectDate(leave)">
       <view class="item">
         <text>{{leave.m}}月{{leave.d}}日</text>
         <view>{{leave.isTd ? '今天 ' : leave.isTmr ? '明天 ' : leave.isDATmr ? '后天 ' : ''}}离店</view>
@@ -334,7 +334,9 @@
     data = {
       camButtonHide: true,
       arrive: {},
+      arriveStart: {},
       leave: {},
+      leaveStart: {},
       hotel: {
         name: '维也纳酒店',
         region: '千灯湖、桂城',
@@ -551,16 +553,11 @@
       },
     }
 
-    watch = {
-      arrive () {},
-      leave () {}
-    }
-
     methods = {
       selectDate (id, {detail: {value}}) {
         this.$parent[id] = this[id] = new Date(value).format()
       },
-      toComment () { 
+      toComment () {
         wepy.navigateTo({ url: `/pages/comment` })
       },
       showLocation () {
@@ -573,6 +570,9 @@
         this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
       },
       booktap (id) {
+        console.log(this.arrive)
+        console.log(this.leave)
+        console.log(this.arrive.date < this.leave.date)
         if (this.arrive.date < this.leave.date) wepy.navigateTo({ url: `/pages/order?id=${id}` })
         else w.showErr('请选择有效日期')
       }
@@ -584,8 +584,14 @@
         .then(r => this.hotel = r.data)
         .catch(e => w.showErr(e.errMsg))
         .then(() => wepy.hideLoading())
-      this.$parent.arrive = this.arrive = new Date().format()
-      this.$parent.leave = this.leave = new Date().offsetDay(1).format()
+      this.arriveStart
+        = this.$parent.arrive
+        = this.arrive
+        = new Date().format()
+      this.leaveStart
+        = this.$parent.leave
+        = this.leave
+        = new Date().offsetDay(1).format()
     }
   }
 
