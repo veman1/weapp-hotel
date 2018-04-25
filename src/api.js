@@ -11,5 +11,5 @@ function r (url) {
 }
 
 module.exports =  {
-  getHotelById: (id) => r(`<api>?id=${id}`)
+  getHotelById: (id) => r(`/<api>?id=${id}`)
 }

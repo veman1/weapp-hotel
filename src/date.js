@@ -7,6 +7,7 @@ Date.prototype.format = function () {
   this.setHours(0)
   this.setMinutes(0)
   this.setSeconds(0)
+  this.setMilliseconds(0)
 
   const tmr = now.offsetDay(1)
   const dATmr = now.offsetDay(2)

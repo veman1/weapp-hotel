@@ -7,7 +7,7 @@
     :arrive.sync="arrive"
     :leave.sync="leave"
     :bed.sync="bed"
-    :break.sync="breakfast"
+    :break.sync="breakfast" />
 </template>
 
 <script>

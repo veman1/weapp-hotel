@@ -87,6 +87,11 @@
     props = {
       id: {}
     }
+    watch = {
+      id (n, o) {
+        console.log(this.id)
+      }
+    }
     methods = {
       booktap () {
         this.$emit('booktap', this.id)
