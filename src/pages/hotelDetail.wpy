@@ -276,8 +276,8 @@
           <i />
         </view>
         <view class="plist">
-          <repeat for="{{ item.priceList }}" index="pindex">
-            <priceitem :info="item" :pindex="pindex" :index="index" @booktap.user="booktap"></priceitem>
+          <repeat for="{{ item.priceList }}" key="id" index="pindex">
+            <priceitem :info="item" :id="id" :pindex="pindex" :index="index" @booktap.user="booktap"></priceitem>
           </repeat>
         </view>
       </view>

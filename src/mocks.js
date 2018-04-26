@@ -27,7 +27,7 @@ const hotel = {
           price: '245'
         },
         { 
-          id: '3', name: '特惠价',
+          id: '3', name: '特惠价2',
           desc: '双份早餐 大床 2人',
           breakfast: '双份早餐',
           beds: '大床',
@@ -35,7 +35,7 @@ const hotel = {
           price: '245'
         },
         { 
-          id: '3', name: '特惠价',
+          id: '3', name: '特惠价3',
           desc: '双份早餐 大床 2人',
           breakfast: '双份早餐',
           beds: '大床',
@@ -53,7 +53,7 @@ const hotel = {
       price: '261',
       priceList: [
         { 
-          id: '3', name: '特惠价',
+          id: '3', name: '特惠价4',
           desc: '双份早餐 大床 2人',
           breakfast: '双份早餐',
           beds: '大床',
