@@ -1,0 +1,14 @@
+<script>
+  import wepy from 'wepy'
+
+  export default class extends wepy.component {
+    methods = {
+      priview (c, u) {
+        wepy.previewImage({
+          current: c,
+          urls: u
+        })
+      }
+    }
+  }
+</script>

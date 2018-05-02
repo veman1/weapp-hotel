@@ -6,5 +6,8 @@ module.exports = {
       title: msg,
       image: '/images/error.png'
     })
+  },
+  nav (u) {
+    wepy.navigateTo({url: u})
   }
 }

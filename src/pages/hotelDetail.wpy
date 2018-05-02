@@ -221,10 +221,10 @@
 
 <template>
   <view class="g-banner">
-    <slider :list.sync="gallery"></slider>
+    <slider :list.sync="gallery" @tap.user="sliderTap"></slider>
     <view class="bannerbottom">
       <text>{{hotel.name}}</text>
-      <view wx:if="{{ !camButtonHide }}" class="button">
+      <view class="button" @tap="previewGallery">
         <image mode="aspectFit" src="/images/hdetail_camera.png" />
         <text>相册</text>
       </view>
@@ -263,7 +263,7 @@
   </view>
 
   <view class="rooms">
-    <repeat for="{{ hotel.roomList }}">
+    <repeat for="{{ hotel.roomList }}" item="item">
       <view class="room {{ item.expand ? 'expand' : '' }}">
         <view class="rtitle" @tap="roomtap({{ index }})">
           <image src="{{ item.img }}" />
@@ -276,8 +276,8 @@
           <i />
         </view>
         <view class="plist">
-          <repeat for="{{ item.priceList }}" key="id" index="pindex">
-            <priceitem :info="item" :id="id" :pindex="pindex" :index="index" @booktap.user="booktap"></priceitem>
+          <repeat for="{{ item.priceList }}">
+            <priceitem :info="item" @tap.user="booktap"></priceitem>
           </repeat>
         </view>
       </view>
@@ -311,86 +311,101 @@
 </template>
 
 <script>
-import wepy from 'wepy'
+  import wepy from 'wepy'
 
-import Slider from '../components/slider'
-import Cell from '../components/cell'
-import Priceitem from '../components/priceitem'
+  import Slider from '../components/slider'
+  import Cell from '../components/cell'
+  import Priceitem from '../components/priceitem'
+  import api from '../api'
+  import w from '../w'
 
-import api from '../api'
-import w from '../w'
+  import mocks from '../mocks'
 
-import mocks from '../mocks'
-const hotel = mocks.hotel
+  const err = w.showErr
+  const nav = w.nav
 
-export default class HotelDetail extends wepy.page {
-  config = {
-    navigationBarTitleText: '酒店详情'
-  }
-
-  components = {
-    slider: Slider,
-    priceitem: Priceitem,
-    cell1: Cell,
-    cell2: Cell
-  }
-
-  data = {
-    camButtonHide: true,
-    arrive: {},
-    arriveStart: {},
-    leave: {},
-    leaveStart: {},
-    hotel: {}
-  }
-
-  computed = {
-    gallery () {
-      return this.hotel.gallery
-    },
-  }
-
-  methods = {
-    selectDate (id, {detail: {value}}) {
-      this.$parent[id] = this[id] = new Date(value).format()
-    },
-    toComment () {
-      wepy.navigateTo({ url: `/pages/comment` })
-    },
-    showLocation () {
-      wepy.openLocation({
-        latitude: this.hotel.latitude,
-        longitude: this.hotel.longitude
-      })
-    },
-    roomtap (i) {
-      this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
-    },
-    booktap (id) {
-      if (this.arrive.date < this.leave.date) wepy.navigateTo({ url: `/pages/order?id=${id}` })
-      else w.showErr('请选择有效日期')
+  export default class HotelDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '酒店详情'
     }
-  }
 
-  onLoad (o) {
-    wepy.showLoading()
-    api.getHotelById(o.id)
-      .then(res => this.hotel = res.data || w.showErr('no data'))
-      .catch(e => w.showErr(e.errMsg))
-      .then(() => wepy.hideLoading())
-      .then(() => {
-        this.hotel = hotel
-        this.$apply()
-      })
-    this.arriveStart
-      = this.$parent.arrive
-      = this.arrive
-      = new Date().format()
-    this.leaveStart
-      = this.$parent.leave
-      = this.leave
-      = new Date().offsetDay(1).format()
-  }
-}
+    components = {
+      slider: Slider,
+      priceitem: Priceitem,
+      cell1: Cell,
+      cell2: Cell
+    }
 
+    data = {
+      arrive: {},
+      arriveStart: {},
+      leave: {},
+      leaveStart: {},
+      hotel: {}
+    }
+
+    computed = {
+      gallery () {
+        return this.hotel.gallery
+      },
+    }
+
+    methods = {
+      selectDate (id, {detail: {value}}) {
+        this.$parent[id] = this[id] = new Date(value).format()
+      },
+      toComment () {
+        wepy.navigateTo({ url: `/pages/comment` })
+      },
+      showLocation () {
+        wepy.openLocation({
+          latitude: this.hotel.latitude,
+          longitude: this.hotel.longitude
+        })
+      },
+      roomtap (i) {
+        this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
+      },
+      booktap (id) {
+        wepy.navigateTo({url: `/pages/order?id=${id}`})
+      },
+      previewGallery (c) {
+        wepy.previewImage({
+          current: c || '',
+          urls: this.hotel.gallery
+        })
+      },
+      sliderTap (index) {
+        this.previewGallery(index)
+      },
+      checkDate () {
+        if (this.arrive < this.leave) {
+          return !0
+        } else {
+          return !1
+        }
+      }
+    }
+
+    onLoad (o) {
+      wepy.showLoading()
+      api.getHotelById(o.id)
+        .then(res => this.hotel = res.data || err('no data'))
+        .catch(e => w.showErr(e.errMsg))
+        .then(() => wepy.hideLoading())
+        .then(() => {
+          this.hotel = mocks.hotel
+          this.$apply()
+        })
+      this.arriveStart
+        = this.$parent.arrive
+        = this.arrive
+        = new Date().format()
+      this.leaveStart
+        = this.$parent.leave
+        = this.leave
+        = new Date().offsetDay(1).format()
+    }
+
+  }
 </script>

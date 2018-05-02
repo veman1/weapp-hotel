@@ -13,7 +13,7 @@
   <swiper circular indicator-dots>
     <repeat for="{{ list }}">
       <swiper-item>
-        <image src="{{ item }}" />
+        <image @tap="preview({{item}})" src="{{ item }}" />
       </swiper-item>
     </repeat>
   </swiper>
@@ -25,6 +25,19 @@
   export default class Slider extends wepy.component {
     props = {
       list: {}
+    }
+
+    methods = {
+      preview (url) {
+        wepy.previewImage({
+          current: url,
+          urls: this.list
+        })
+      },
+
+      log () {
+        console.log('log')
+      }
     }
   }
 </script>

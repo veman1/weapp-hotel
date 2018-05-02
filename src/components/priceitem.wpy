@@ -73,10 +73,10 @@
 
 <template>
   <view class="price_item">
-    <view class="title">{{info.name}}{{id}}</view>
+    <view class="title">{{info.name}}</view>
     <view class="feature">{{info.desc}}</view>
     <view class="price">￥{{info.price}}</view>
-    <b @tap="booktap({{id}})" />
+    <b @tap="booktap({{info.id}})" />
   </view>
 </template>
 
@@ -84,17 +84,10 @@
   import wepy from 'wepy'
 
   export default class Priceitem extends wepy.component {
-    props = {
-      id: {}
-    }
     methods = {
-      booktap () {
-        console.log(this.info)
-        this.$emit('booktap', this.id)
+      booktap (id) {
+        this.$emit('tap', id)
       }
-    }
-    onLoad () {
-      console.log(this.info)
     }
   }
 </script>
