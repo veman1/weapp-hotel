@@ -1,31 +1,23 @@
 <script>
+  import './date'
+  import wepy from 'wepy'
 
-import './date'
-import wepy from 'wepy'
-
-export default class extends wepy.app {
-  config = {
-    pages: [
-      'pages/index',
-      'pages/hotelDetail',
-      'pages/order',
-      'pages/comment'
-    ],
-    window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: '订酒店',
-      navigationBarTextStyle: 'black'
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index',
+        'pages/hotelDetail',
+        'pages/order',
+        'pages/comment'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: '订酒店',
+        navigationBarTextStyle: 'black'
+      }
     }
   }
-
-  showErr (msg) {
-    wepy.showToast({
-      title: msg,
-      image: '/images/error.png'
-    })
-  }
-}
 
 </script>
 

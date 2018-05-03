@@ -1,17 +1,27 @@
 <style lang="less"></style>
 
 <template>
-  <view>name: {{name}}</view>
-  <view>m: {{arrive.m}}</view>
+  <view>{{rname}}</view>
+  <view>{{pname}}</view>
+  <view>{{arrive.m}}</view>
+  <view>{{arrive.d}}</view>
+  <view>{{leave.m}}</view>
+  <view>{{leave.d}}</view>
+  <view>{{bed}}</view>
+  <view>{{break}}</view>
 </template>
 
 <script>
 import wepy from 'wepy'
 
 export default class Orderbox extends wepy.component {
-  data = {
+  props = {
+    rname: {},
+    pname: {},
     arrive: {},
-    leave: {}
+    leave: {},
+    bed: {},
+    break: {}
   }
 }
 </script>

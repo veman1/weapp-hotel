@@ -1,13 +1,16 @@
 <style lang="less"></style>
 
 <template>
-  <orderbox 
-    :rname.sync="roomName"
-    :pname.sync="priceName"
-    :arrive.sync="arrive"
-    :leave.sync="leave"
-    :bed.sync="bed"
-    :break.sync="breakfast" />
+  <view class="info">
+    <orderbox 
+      :rname.sync="roomName"
+      :pname.sync="priceName"
+      :arrive.sync="arrive"
+      :leave.sync="leave"
+      :bed.sync="bed"
+      :break.sync="breakfast" />
+  </view>
+  <button @tap="">提交</button>
 </template>
 
 <script>
@@ -26,15 +29,29 @@ export default class Order extends wepy.page {
   data = {
     arrive: {},
     leave: {},
+    roomName: 'roomName',
+    priceName: 'priceName',
+    arrive: 'arrive',
+    leave: 'leave',
+    bed: 'bed',
+    breakfast: 'breakfast'
   }
 
   methods = {
+    submit () {
+      console.log(this.hotel)
+      console.log(this.pid)
+    }
+  }
+
+  watch = {
   }
 
   onLoad (o) {
-    this.name = 'tom'
     this.arrive = this.$parent.arrive
     this.leave = this.$parent.leave
+    this.hotel = this.$parent.hotel
+    this.pid = o.pid
   }
 }
 </script>

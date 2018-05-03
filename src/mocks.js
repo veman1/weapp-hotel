@@ -1,6 +1,10 @@
 const banner = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523445418678&di=b36f48b50f8fc2cc0717ce009f90e8fd&imgtype=0&src=http%3A%2F%2Fimgbdb2.bendibao.com%2Ftour%2F201212%2F19%2F20121219143436777.jpg'
+const banner1 = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525325672159&di=40df49f460c66787977955105e4fec9e&imgtype=0&src=http%3A%2F%2Fm.tuniucdn.com%2Ffilebroker%2Fcdn%2Fsnc%2F75%2Ff7%2F75f77ddeb5a16798454823bf231af2fb_w800_h400_c1_t0.jpg'
+const banner2 = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525325672159&di=257d5b939e2a2fa8af0fd75dd35a7308&imgtype=0&src=http%3A%2F%2Fproimg.cctcct.com%2FUploadFile%2Fimage%2Fscenic%2F201511%2F10141078917891.jpg%3F2017-5-212%3A15%3A42'
+const banner3 = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525325672159&di=871a1db03640c82fb2fe04033e230650&imgtype=0&src=http%3A%2F%2Fm.tuniucdn.com%2Ffilebroker%2Fcdn%2Fsnc%2Fe8%2F24%2Fe82494ea62be9a9139ed576f81eba31e_w800_h400_c1_t0.jpg'
 
 const hotel = {
+  id: '234',
   name: '维也纳酒店',
   region: '千灯湖、桂城',
   address: '桂澜北路',
@@ -8,7 +12,7 @@ const hotel = {
   comment_count: 366,
   latitude: 0,
   longitude: 0,
-  gallery: new Array(4).fill(banner),
+  gallery: [banner, banner1, banner2, banner3],
   roomList: [
     {
       name: '标准双床房',

@@ -316,6 +316,7 @@
   import Slider from '../components/slider'
   import Cell from '../components/cell'
   import Priceitem from '../components/priceitem'
+
   import api from '../api'
   import w from '../w'
 
@@ -323,6 +324,19 @@
 
   const err = w.showErr
   const nav = w.nav
+
+  function showLoad () {
+    return new Promise((res, rej) => {
+      wepy.showLoading({mask:!0})
+      res()
+    })
+  }
+  function hideLoad () {
+    wepy.hideLoading()
+  }
+  function err_nodata () {
+    w.showErr('获取数据失败')
+  }
 
   export default class HotelDetail extends wepy.page {
     config = {
@@ -367,7 +381,14 @@
         this.hotel.roomList.map((v, j) => v.expand = i === j ? !v.expand : !1)
       },
       booktap (id) {
-        wepy.navigateTo({url: `/pages/order?id=${id}`})
+        function order () {
+          nav(`/pages/order?pid=${id}`)
+        }
+        function throwError () {
+          err('请选择有效日期')
+        }
+        const dateValid = this.arrive.date < this.leave.date
+        dateValid ? order() : throwError()
       },
       previewGallery (c) {
         wepy.previewImage({
@@ -387,16 +408,26 @@
       }
     }
 
+    fetchHotel (hid) {
+      return new Promise((res, rej) => {
+        function resolve (r) {
+          res(r)
+        }
+        function reject (r) {
+          rej(r)
+        }
+        api.getHotelById(hid).then(resolve).catch(reject)
+      })
+    }
+
     onLoad (o) {
-      wepy.showLoading()
-      api.getHotelById(o.id)
-        .then(res => this.hotel = res.data || err('no data'))
-        .catch(e => w.showErr(e.errMsg))
-        .then(() => wepy.hideLoading())
-        .then(() => {
-          this.hotel = mocks.hotel
-          this.$apply()
-        })
+      const loadMock = () => {
+        this.hotel = mocks.hotel
+        this.$parent.hotel = mocks.hotel
+        this.$apply()
+      }
+      showLoad()
+      this.fetchHotel(o.hid).catch(err_nodata).then(hideLoad).then(loadMock)
       this.arriveStart
         = this.$parent.arrive
         = this.arrive
